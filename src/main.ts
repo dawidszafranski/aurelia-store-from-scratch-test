@@ -1,0 +1,19 @@
+import {Aurelia} from 'aurelia-framework';
+import * as environment from '../config/environment.json';
+import {PLATFORM} from 'aurelia-pal';
+import { Store } from 'store-lib';
+import { initState, reducer } from './store';
+
+export function configure(aurelia: Aurelia): void {
+  aurelia.use
+    .standardConfiguration()
+    .singleton(Store, () => new Store(initState, reducer));
+
+  aurelia.use.developmentLogging(environment.debug ? 'debug' : 'warn');
+
+  if (environment.testing) {
+    aurelia.use.plugin(PLATFORM.moduleName('aurelia-testing'));
+  }
+
+  aurelia.start().then(() => aurelia.setRoot(PLATFORM.moduleName('app')));
+}
